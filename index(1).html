@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Tableau FORCE</title>
+  <style>
+    :root{--ink:#17324d;--bg:#f5f7fb;--card:#fff;--gold:#f5b942;--blue:#3273dc;--green:#2e9d69;--red:#df5b5b;--purple:#7957d5;--teal:#1b9aaa}
+    *{box-sizing:border-box}body{margin:0;font-family:Inter,Arial,sans-serif;color:var(--ink);background:var(--bg)}button,select{font:inherit}
+    header{background:linear-gradient(120deg,#17324d,#25547c);color:#fff;padding:22px 5vw;display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap}
+    h1{margin:0;font-size:clamp(25px,4vw,40px);letter-spacing:.04em}.subtitle{opacity:.9;margin-top:5px}.total{background:#fff2;padding:10px 15px;border-radius:14px;font-weight:800}
+    main{max-width:1500px;margin:auto;padding:22px}.toolbar,.panel{background:var(--card);border:1px solid #dfe5ec;border-radius:18px;box-shadow:0 5px 16px #17324d12}
+    .toolbar{padding:16px;display:grid;grid-template-columns:minmax(210px,1fr) minmax(220px,2fr) auto auto;gap:10px;align-items:center;position:sticky;top:8px;z-index:5}
+    select,.btn{min-height:44px;border:1px solid #cbd5e1;border-radius:11px;padding:9px 12px;background:#fff}.btn{cursor:pointer;font-weight:800}.btn.primary{background:var(--blue);border-color:var(--blue);color:#fff}.btn:disabled{opacity:.45;cursor:not-allowed}.btn:hover:not(:disabled){filter:brightness(.96)}
+    .force-key{display:grid;grid-template-columns:repeat(5,1fr);gap:9px;margin:18px 0}.force-chip{color:#fff;border-radius:14px;padding:10px;text-align:center;font-weight:800}.force-chip small{display:block;font-weight:500;margin-top:3px}.F{background:var(--blue)}.O{background:var(--gold);color:#352600}.R{background:var(--red)}.C{background:var(--purple)}.E{background:var(--green)}
+    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:13px}.student{background:#fff;border:3px solid transparent;border-radius:18px;padding:14px 10px;text-align:center;cursor:pointer;position:relative;box-shadow:0 3px 12px #17324d12;transition:.15s}.student:hover{transform:translateY(-2px)}.student.selected{border-color:var(--blue);background:#edf5ff}.check{position:absolute;top:8px;right:9px;width:25px;height:25px;border-radius:50%;border:2px solid #c8d2df;background:#fff;color:#fff;font-weight:900}.selected .check{background:var(--blue);border-color:var(--blue)}
+    .avatar{width:70px;height:70px;margin:0 auto 8px;border-radius:50%;display:grid;place-items:center;font-size:31px;font-weight:900;color:#fff;box-shadow:inset 0 -5px #0001}.name{font-weight:800;min-height:39px;display:grid;place-items:center;overflow-wrap:anywhere}.points{font-size:28px;font-weight:900;margin:5px 0}.quick{border:0;border-radius:9px;background:#e9f6ef;color:#196a46;font-weight:900;padding:7px 10px;cursor:pointer}
+    .bottom{display:grid;grid-template-columns:2fr 1fr;gap:18px;margin-top:20px}.panel{padding:18px}h2{margin:0 0 12px;font-size:20px}.history{max-height:320px;overflow:auto}.event{display:grid;grid-template-columns:1fr auto;gap:8px;padding:10px 0;border-bottom:1px solid #edf0f4;font-size:14px}.undo{border:0;background:#fff0f0;color:#a22;border-radius:8px;padding:6px 9px;cursor:pointer}.empty{color:#708090;text-align:center;padding:18px}
+    .settings label{display:block;margin:10px 0 5px;font-weight:700}.danger{color:#a22;border-color:#eabbbb}.note{font-size:13px;color:#617183;line-height:1.4}.toast{position:fixed;right:20px;bottom:20px;background:#17324d;color:#fff;padding:12px 16px;border-radius:12px;opacity:0;transform:translateY(12px);pointer-events:none;transition:.2s;z-index:20}.toast.show{opacity:1;transform:none}
+    @media(max-width:850px){.toolbar{grid-template-columns:1fr 1fr}.force-key{grid-template-columns:repeat(2,1fr)}.bottom{grid-template-columns:1fr}}
+    @media(max-width:520px){main{padding:12px}.toolbar{position:static;grid-template-columns:1fr}.grid{grid-template-columns:repeat(2,1fr)}.force-key{grid-template-columns:1fr}.avatar{width:58px;height:58px}}
+  </style>
+</head>
+<body>
+  <header><div><h1>⚡ Tableau FORCE</h1><div class="subtitle">Nos efforts font grandir notre force.</div></div><div class="total"><span id="classTotal">0</span> points de classe</div></header>
+  <main>
+    <section class="toolbar" aria-label="Attribution de points">
+      <select id="category" aria-label="Catégorie FORCE"></select>
+      <select id="behaviour" aria-label="Comportement"></select>
+      <button class="btn" id="selectAll">Tout sélectionner</button>
+      <button class="btn primary" id="award" disabled>+ 1 point</button>
+    </section>
+    <div class="force-key" aria-label="Signification de FORCE">
+      <div class="force-chip F">🎯 F<small>Faire de mon mieux</small></div><div class="force-chip O">🙋 O<small>Oser participer</small></div><div class="force-chip R">🤝 R<small>Respecter</small></div><div class="force-chip C">💬 C<small>Communiquer clairement</small></div><div class="force-chip E">⚡ E<small>Être engagé</small></div>
+    </div>
+    <section class="grid" id="students" aria-label="Élèves"></section>
+    <section class="bottom">
+      <div class="panel"><h2>Historique récent</h2><div class="history" id="history"></div></div>
+      <div class="panel settings"><h2>Gestion</h2><button class="btn" id="clearSelection">Effacer la sélection</button> <button class="btn danger" id="reset">Remettre tous les points à zéro</button><p class="note">Les points et l’historique sont enregistrés automatiquement dans ce navigateur. Ils restent sur cet appareil, même après avoir fermé la page.</p></div>
+    </section>
+  </main>
+  <div class="toast" id="toast" role="status"></div>
+  <script>
+    const students=['Adefarayola','Anna','Kalliope','Madilynn','Oliver','Lexi','Noami','Odin','Maève','Sophie','Dominic','Tegan','Eileigh','Joseph','Emilie','Léa','Ewelina','Emma','Deacon','Kurtis','Wyatt','Isla','Araotanlowooluwa','Jayden','Benjamin'];
+    const behaviours={
+      F:{label:'🎯 F — Faire de mon mieux',items:['J’ai fait de mon mieux.','J’ai persévéré malgré une difficulté.','J’ai utilisé une stratégie enseignée.','J’ai vérifié et amélioré mon travail.']},
+      O:{label:'🙋 O — Oser participer',items:['J’ai partagé une idée.','J’ai posé une question pertinente.','J’ai essayé même sans être certain·e.','J’ai relevé un nouveau défi.']},
+      R:{label:'🤝 R — Respecter',items:['J’ai respecté les autres.','J’ai pris soin du matériel et de l’environnement.','J’ai écouté attentivement.','J’ai posé un geste bienveillant.']},
+      C:{label:'💬 C — Communiquer clairement',items:['J’ai expliqué clairement ma pensée.','J’ai utilisé un ton et des mots appropriés.','J’ai écouté avant de répondre.','J’ai contribué positivement à mon équipe.']},
+      E:{label:'⚡ E — Être engagé',items:['J’ai commencé rapidement la tâche.','Je suis demeuré·e concentré·e.','J’ai utilisé mon temps efficacement.','J’ai accompli ma responsabilité avec autonomie.']}
+    };
+    const colours=['#3273dc','#df5b5b','#2e9d69','#7957d5','#f08a4b','#1b9aaa','#d45d9e','#607d8b','#8a6d3b','#4a90a4'];
+    const KEY='tableau-force-classe-2026-v1'; let state=JSON.parse(localStorage.getItem(KEY)||'null')||{points:{},history:[]}; let selected=new Set();
+    students.forEach(n=>state.points[n]??=0);
+    const $=s=>document.querySelector(s); const save=()=>localStorage.setItem(KEY,JSON.stringify(state));
+    function initials(n){return n.split(/\s+/).map(x=>x[0]).join('').slice(0,2).toUpperCase()}
+    function renderStudents(){ $('#students').innerHTML=students.map((n,i)=>`<article class="student ${selected.has(n)?'selected':''}" tabindex="0" data-name="${n}" aria-pressed="${selected.has(n)}"><span class="check">✓</span><div class="avatar" style="background:${colours[i%colours.length]}">${initials(n)}</div><div class="name">${n}</div><div class="points">${state.points[n]}</div><button class="quick" data-quick="${n}" title="Ajouter le comportement choisi">+1</button></article>`).join(''); $('#classTotal').textContent=students.reduce((a,n)=>a+state.points[n],0); $('#award').disabled=!selected.size; $('#award').textContent=selected.size?`+ 1 à ${selected.size} élève${selected.size>1?'s':''}`:'+ 1 point'; }
+    function renderHistory(){const h=state.history.slice(0,50); $('#history').innerHTML=h.length?h.map((e,i)=>`<div class="event"><div><b>${e.names.join(', ')}</b><br>${e.force} · ${e.behaviour}<br><small>${new Date(e.time).toLocaleString('fr-CA')}</small></div><button class="undo" data-undo="${i}">Annuler</button></div>`).join(''):'<div class="empty">Aucun point accordé pour le moment.</div>';}
+    function fillCategories(){ $('#category').innerHTML=Object.entries(behaviours).map(([k,v])=>`<option value="${k}">${v.label}</option>`).join(''); fillBehaviours();}
+    function fillBehaviours(){const k=$('#category').value; $('#behaviour').innerHTML=behaviours[k].items.map(x=>`<option>${x}</option>`).join('');}
+    function award(names){if(!names.length)return; const force=$('#category').value,behaviour=$('#behaviour').value; names.forEach(n=>state.points[n]++);state.history.unshift({names:[...names],force,behaviour,time:Date.now()});save();renderStudents();renderHistory();toast(`+1 point : ${names.length} élève${names.length>1?'s':''}`)}
+    function toast(t){$('#toast').textContent=t;$('#toast').classList.add('show');setTimeout(()=>$('#toast').classList.remove('show'),1800)}
+    $('#category').addEventListener('change',fillBehaviours); $('#students').addEventListener('click',e=>{const q=e.target.dataset.quick;if(q){e.stopPropagation();award([q]);return}const card=e.target.closest('.student');if(card){const n=card.dataset.name;selected.has(n)?selected.delete(n):selected.add(n);renderStudents()}}); $('#students').addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&e.target.classList.contains('student')){e.preventDefault();e.target.click()}});
+    $('#award').onclick=()=>award([...selected]); $('#selectAll').onclick=()=>{selected.size===students.length?selected.clear():students.forEach(n=>selected.add(n));renderStudents()}; $('#clearSelection').onclick=()=>{selected.clear();renderStudents()};
+    $('#history').onclick=e=>{if(!e.target.dataset.undo)return;const idx=+e.target.dataset.undo,event=state.history[idx];event.names.forEach(n=>state.points[n]=Math.max(0,state.points[n]-1));state.history.splice(idx,1);save();renderStudents();renderHistory();toast('Point annulé')};
+    $('#reset').onclick=()=>{if(confirm('Remettre tous les points à zéro et effacer l’historique?')){students.forEach(n=>state.points[n]=0);state.history=[];selected.clear();save();renderStudents();renderHistory()}};
+    fillCategories();renderStudents();renderHistory();save();
+  </script>
+</body>
+</html>
