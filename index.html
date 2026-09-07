@@ -22,6 +22,15 @@
 
     <section class="yoda"><img src="yoda.png" alt="Yoda"><div><span>CONSEIL DU MAÎTRE</span><blockquote>« Grandir et réussir, chaque jour tu peux. »</blockquote></div><i class="saber"></i></section>
     <p class="mode-note"><b>MODE AUTONOME</b> — Aucun compte, serveur ou service d’intelligence artificielle. Les données restent dans ce navigateur.</p>
+
+    <section class="semester-switch" aria-label="Choix du semestre">
+      <div><span>PÉRIODE D’OBSERVATION</span><strong id="semester-title">1er semestre</strong></div>
+      <div class="semester-buttons">
+        <button class="on" data-semester="1">1er semestre</button>
+        <button data-semester="2">2e semestre</button>
+      </div>
+    </section>
+
     <section class="forces" id="forces" aria-label="Les sept clés de RÉUSSIR"></section>
 
     <section class="view active classView" id="view-class">
@@ -36,13 +45,13 @@
     </section>
 
     <section class="view history" id="view-history">
-      <div class="sectionTitle"><div><h2>Historique des observations</h2><p>Les plus récentes apparaissent en premier.</p></div><button class="secondary export-csv">Exporter CSV pour Google Sheets</button></div>
-      <div class="sheetStatus connected">Sauvegarde locale activée. Pour conserver une copie ou transférer les données, utilise le bouton d’exportation CSV.</div>
+      <div class="sectionTitle"><div><h2>Historique des observations — <span id="history-semester">1er semestre</span></h2><p>Les plus récentes apparaissent en premier.</p></div><button class="secondary export-csv">Exporter CSV pour Google Sheets</button></div>
+      <div class="sheetStatus connected">Sauvegarde locale activée. Les observations du 1er et du 2e semestre sont conservées séparément.</div>
       <div class="logs" id="history-list"></div>
     </section>
 
     <section class="view summaryView" id="view-summary">
-      <div class="sectionTitle"><div><h2>Sommaire RÉUSSIR</h2><p>Moyennes calculées à partir des observations consignées.</p></div><button class="secondary export-csv">Exporter les observations</button></div>
+      <div class="sectionTitle"><div><h2>Sommaire RÉUSSIR — <span id="summary-semester">1er semestre</span></h2><p>Moyennes calculées uniquement à partir des observations du semestre choisi.</p></div><button class="secondary export-csv">Exporter les observations</button></div>
       <div class="tableWrap"><table><thead id="summary-head"></thead><tbody id="summary-body"></tbody></table></div>
       <p class="professionalNote">Les moyennes servent d’aide à la décision. La cote du bulletin demeure fondée sur le jugement professionnel et la tendance des observations.</p>
     </section>

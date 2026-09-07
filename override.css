@@ -4,7 +4,14 @@
 .empty{padding:24px;color:#7a6855;background:#fffaf4;border:1px solid #ccbba8;border-radius:14px;box-shadow:0 10px 28px rgba(111,87,63,.12)}
 .mode-note{width:min(1180px,94vw);margin:14px auto 0;padding:11px 14px;color:#6b7e60;background:#f7faf4;border:1px solid #a9bc9d;border-radius:14px;font-size:12px;box-shadow:0 10px 28px rgba(111,87,63,.08)}
 .mode-note b{color:#8a6a47}
-.student:focus-visible,.quick:focus-visible,.tabs button:focus-visible,.award:focus-visible,.secondary:focus-visible{outline:3px solid #c9906e;outline-offset:2px}
+.semester-switch{width:min(1180px,94vw);margin:12px auto 0;padding:12px 14px;display:flex;align-items:center;justify-content:space-between;gap:16px;background:#fffaf4;border:1px solid #ccbba8;border-radius:16px;box-shadow:0 10px 28px rgba(111,87,63,.10)}
+.semester-switch span{display:block;font-size:10px;letter-spacing:1.3px;font-weight:800;color:#8a6a47}
+.semester-switch strong{display:block;margin-top:2px;font-size:18px;color:#4e4338}
+.semester-buttons{display:flex;gap:8px;padding:4px;background:#f0e7dc;border-radius:12px}
+.semester-buttons button{border:0;background:transparent;color:#766454;padding:9px 15px;border-radius:9px;font-weight:800;cursor:pointer}
+.semester-buttons button.on{background:#fff;color:#5f4f41;box-shadow:0 2px 8px rgba(95,79,65,.14)}
+.student:focus-visible,.quick:focus-visible,.tabs button:focus-visible,.semester-buttons button:focus-visible,.award:focus-visible,.secondary:focus-visible{outline:3px solid #c9906e;outline-offset:2px}
 .student{cursor:pointer}
 .student[role=button]{appearance:none}
 .modalList button:focus-visible{outline:2px solid #c9906e;outline-offset:-2px}
+@media(max-width:650px){.semester-switch{align-items:stretch;flex-direction:column}.semester-buttons{width:100%}.semester-buttons button{flex:1}}
