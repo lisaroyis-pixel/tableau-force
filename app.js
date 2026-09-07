@@ -2,13 +2,13 @@
   'use strict';
 
   const KEYS = [
-    { id:'francais', letter:'R', title:'Rayonner en français', skill:'Utilisation du français oral', icon:'FR', color:'#6f8f68', description:'Je parle français avec confiance.' },
-    { id:'fiabilite', letter:'É', title:'Être fiable', skill:'Fiabilité', icon:'✓', color:'#d9784a', description:'On peut compter sur moi.' },
-    { id:'autonomie', letter:'U', title:'Utiliser les ressources', skill:'Autonomie', icon:'⌛', color:'#4d9b9a', description:'Je trouve des solutions et je respecte les routines de façon autonome.' },
-    { id:'initiative', letter:'S', title:'Saisir les occasions d’agir', skill:'Sens de l’initiative', icon:'✦', color:'#dfa52c', description:'J’ose essayer et je prends des initiatives.' },
-    { id:'organisation', letter:'S', title:'Structurer mon matériel, mon temps et mon travail', skill:'Sens de l’organisation', icon:'▣', color:'#77906e', description:'Je planifie et je m’organise pour réussir.' },
-    { id:'collaboration', letter:'I', title:'Interagir positivement avec les autres', skill:'Esprit de collaboration', icon:'◆', color:'#d66f45', description:'Je contribue positivement au travail avec les autres.' },
-    { id:'autoregulation', letter:'R', title:'Réguler mes émotions et me fixer des objectifs', skill:'Autorégulation', icon:'◎', color:'#56a2a0', description:'Je connais mes besoins, je m’ajuste et je progresse.' }
+    { id:'francais', letter:'R', title:'Rayonner en français', skill:'Utilisation du français oral', color:'#6f8f68', description:'Je parle français avec confiance.', meaning:'Drapeau franco-ontarien' },
+    { id:'fiabilite', letter:'É', title:'Être fiable', skill:'Fiabilité', color:'#d9784a', description:'On peut compter sur moi.', meaning:'Responsabilités terminées' },
+    { id:'autonomie', letter:'U', title:'Utiliser les ressources', skill:'Autonomie', color:'#4d9b9a', description:'Je trouve des solutions et je respecte les routines de façon autonome.', meaning:'Outils et ressources' },
+    { id:'initiative', letter:'S', title:'Saisir les occasions d’agir', skill:'Sens de l’initiative', color:'#dfa52c', description:'J’ose essayer et je prends des initiatives.', meaning:'Idées et participation' },
+    { id:'organisation', letter:'S', title:'Structurer mon matériel, mon temps et mon travail', skill:'Sens de l’organisation', color:'#77906e', description:'Je planifie et je m’organise pour réussir.', meaning:'Agenda et matériel en ordre' },
+    { id:'collaboration', letter:'I', title:'Interagir positivement avec les autres', skill:'Esprit de collaboration', color:'#d66f45', description:'Je contribue positivement au travail avec les autres.', meaning:'Travail d’équipe' },
+    { id:'autoregulation', letter:'R', title:'Réguler mes émotions et me fixer des objectifs', skill:'Autorégulation', color:'#56a2a0', description:'Je connais mes besoins, je m’ajuste et je progresse.', meaning:'Émotions et objectifs' }
   ];
 
   const BEHAVIORS = {
@@ -114,8 +114,9 @@
   function renderKeyBar(){
     byId('forces').innerHTML = KEYS.map(k => `
       <div style="--c:${k.color}" title="${escapeHtml(k.description)}">
-        <b>${k.icon} ${k.letter}</b>
+        <b>${k.letter}</b>
         <span>${escapeHtml(k.title)}</span>
+        <small>${escapeHtml(k.meaning)}</small>
       </div>`).join('');
   }
 
@@ -233,7 +234,7 @@
         <button class="close" aria-label="Fermer">×</button>
         <p>Consigner une observation — <b>${semesterLabel()}</b></p><h2>${escapeHtml(name)}</h2>
         <label class="modalRating">Cote<select id="modal-rating">${RATINGS.map(r=>`<option value="${r.value}" ${r.value===3?'selected':''}>${r.label}</option>`).join('')}</select></label>
-        <div class="modalList">${KEYS.map(k=>`<section><h3 style="color:${k.color}">${k.icon} ${k.letter} — ${escapeHtml(k.title)} <small>(${escapeHtml(k.skill)})</small></h3>${behaviors.filter(b=>b.key===k.id).map(b=>`<button data-modal-behavior="${b.id}"><span>${escapeHtml(b.label)}</span><b>Consigner</b></button>`).join('')}</section>`).join('')}</div>
+        <div class="modalList">${KEYS.map(k=>`<section><h3 style="color:${k.color}">${k.letter} — ${escapeHtml(k.title)} <small>(${escapeHtml(k.skill)})</small></h3><p class="meaning-note">${escapeHtml(k.meaning)}</p>${behaviors.filter(b=>b.key===k.id).map(b=>`<button data-modal-behavior="${b.id}"><span>${escapeHtml(b.label)}</span><b>Consigner</b></button>`).join('')}</section>`).join('')}</div>
       </div></div>`;
     root.querySelector('.close').addEventListener('click', closeModal);
     root.querySelector('.modalbg').addEventListener('click',e=>{ if(e.target===e.currentTarget) closeModal(); });
