@@ -261,6 +261,23 @@
     toast(`${semesterLabel()} activé.`);
   }
 
+
+  function resetSemester(){
+    const label = semesterLabel();
+    const count = semesterLogs().length;
+    if(!count){
+      toast(`Aucune observation à réinitialiser pour le ${label}.`);
+      return;
+    }
+    const ok = window.confirm(`Réinitialiser le ${label} ?\n\nCela effacera définitivement les ${count} observation${count>1?'s':''} de ce semestre. Les données de l’autre semestre seront conservées.`);
+    if(!ok) return;
+    state.logs = state.logs.filter(l=>Number(l.semester||1)!==activeSemester);
+    selected.clear();
+    save();
+    renderAll();
+    toast(`${label} réinitialisé. Les données de l’autre semestre sont intactes.`);
+  }
+
   function exportCsv(){
     const rows = [['Semestre','Date','Élève','Lettre','Clé RÉUSSIR','HH','Comportement observé','Cote']];
     [...semesterLogs()].reverse().forEach(log=>{
@@ -288,6 +305,7 @@
   document.querySelectorAll('.tabs button').forEach(btn=>btn.addEventListener('click',()=>switchTab(btn.dataset.tab)));
   document.querySelectorAll('[data-semester]').forEach(btn=>btn.addEventListener('click',()=>switchSemester(btn.dataset.semester)));
   document.querySelectorAll('.export-csv').forEach(btn=>btn.addEventListener('click',exportCsv));
+  byId('reset-semester').addEventListener('click',resetSemester);
 
   renderControls();
   save();
