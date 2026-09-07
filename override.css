@@ -1,0 +1,10 @@
+.view{display:none}
+.view.active{display:block}
+.history.active,.summaryView.active{display:block}
+.empty{padding:24px;color:#7a6855;background:#fffaf4;border:1px solid #ccbba8;border-radius:14px;box-shadow:0 10px 28px rgba(111,87,63,.12)}
+.mode-note{width:min(1180px,94vw);margin:14px auto 0;padding:11px 14px;color:#6b7e60;background:#f7faf4;border:1px solid #a9bc9d;border-radius:14px;font-size:12px;box-shadow:0 10px 28px rgba(111,87,63,.08)}
+.mode-note b{color:#8a6a47}
+.student:focus-visible,.quick:focus-visible,.tabs button:focus-visible,.award:focus-visible,.secondary:focus-visible{outline:3px solid #c9906e;outline-offset:2px}
+.student{cursor:pointer}
+.student[role=button]{appearance:none}
+.modalList button:focus-visible{outline:2px solid #c9906e;outline-offset:-2px}
