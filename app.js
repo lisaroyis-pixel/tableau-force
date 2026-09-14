@@ -47,13 +47,6 @@
   };
   Object.keys(BEHAVIORS).forEach(s => BEHAVIORS[s] = BEHAVIORS[s].map(([id,key,label])=>({id,key,label,semester:Number(s)})));
 
-  const RATINGS = [
-    { value:1, label:'1 — Avec beaucoup de soutien' },
-    { value:2, label:'2 — En développement' },
-    { value:3, label:'3 — De façon autonome' },
-    { value:4, label:'4 — De façon constante' }
-  ];
-
   const STUDENTS = ['Anna','Araotan','Benjamin','Deacon','Dominic','Eileigh','Emilie','Emma','Ewelina','Fara','Isla','Jayden','Joseph','Kalliope','Kurtis','Léa','Lenora','Lexi','Madilynn','Maève','Naomi','Nathan','Odin','Oliver','Sophie','Tegan','Wyatt'];
   const AVATAR_COLORS = ['#c68b31','#3ca493','#d25f6c','#657cca','#9569b7','#559759'];
   const STORAGE_KEY = 'tableau-reussir-hh-2026';
@@ -135,28 +128,23 @@
       <optgroup label="${k.letter} — ${escapeHtml(k.title)} · ${escapeHtml(k.skill)}">
         ${behaviors.filter(b=>b.key===k.id).map(b=>`<option value="${b.id}">${escapeHtml(b.label)}</option>`).join('')}
       </optgroup>`).join('');
-    byId('rating-select').innerHTML = RATINGS.map(r=>`<option value="${r.value}" ${r.value===3?'selected':''}>${r.label}</option>`).join('');
   }
 
   function observationCount(name){ return semesterLogs().filter(l => l.student === name).length; }
-  function studentAverage(name){
-    const logs = semesterLogs().filter(l=>l.student===name);
-    if(!logs.length) return null;
-    return logs.reduce((a,l)=>a+Number(l.rating||0),0)/logs.length;
-  }
+  function studentPoints(name){ return semesterLogs().filter(l=>l.student===name).length; }
 
   function renderStudents(){
     byId('selection-summary').textContent = selected.size ? `${selected.size} élève${selected.size>1?'s':''} choisi${selected.size>1?'s':''} : ${[...selected].join(', ')}` : 'Aucun élève choisi';
     byId('select-all').textContent = selected.size === STUDENTS.length ? 'Tout désélectionner' : 'Choisir toute la classe';
     byId('student-grid').innerHTML = state.students.map((s,i)=>{
-      const avg = studentAverage(s.name);
+      const points = studentPoints(s.name);
       const count = observationCount(s.name);
       return `<article class="student ${selected.has(s.name)?'selected':''}" role="button" tabindex="0" data-student="${escapeHtml(s.name)}" aria-pressed="${selected.has(s.name)}">
         <button class="quick" aria-label="Observation rapide pour ${escapeHtml(s.name)}" data-quick="${escapeHtml(s.name)}">+</button>
         <div class="check">✓</div>
         <div class="avatar" style="background:${AVATAR_COLORS[i%AVATAR_COLORS.length]}">${escapeHtml(s.name[0])}</div>
         <h2 title="${escapeHtml(s.name)}">${escapeHtml(s.name)}</h2>
-        <div class="score">${avg===null?'—':avg.toFixed(1)}<small>/4</small></div>
+        <div class="score">${points}<small> pt${points!==1?'s':''}</small></div>
         <small class="count">${count} observation${count!==1?'s':''}</small>
       </article>`;
     }).join('');
@@ -176,7 +164,7 @@
     }));
   }
 
-  function record(names, behaviorId, rating){
+  function record(names, behaviorId){
     if(!names.length) return toast('Choisis au moins un élève.');
     const behavior = behaviorById[behaviorId];
     if(!behavior) return;
@@ -188,7 +176,7 @@
       keyId: behavior.key,
       behavior: behavior.label,
       semester: activeSemester,
-      rating: Number(rating),
+      points: 1,
       at: now.toISOString(),
       displayDate: now.toLocaleString('fr-CA')
     }));
@@ -209,7 +197,7 @@
       return `<article>
         <div class="badge" style="background:${k.color}">${k.letter}</div>
         <div><b>${escapeHtml(log.student)}</b><p>${escapeHtml(log.behavior||'Observation')}</p><small>${escapeHtml(log.displayDate || new Date(log.at).toLocaleString('fr-CA'))} · ${escapeHtml(k.title)}</small></div>
-        <strong>${Number(log.rating||0)}/4</strong>
+        <strong>+1</strong>
         <button data-delete="${log.id}">Annuler</button>
       </article>`;
     }).join('');
@@ -219,19 +207,14 @@
     }));
   }
 
-  function averageFor(student,keyId){
-    const logs = semesterLogs().filter(l=>l.student===student && l.keyId===keyId);
-    if(!logs.length) return null;
-    return logs.reduce((a,l)=>a+Number(l.rating||0),0)/logs.length;
-  }
+  function pointsFor(student,keyId){ return semesterLogs().filter(l=>l.student===student && l.keyId===keyId).length; }
 
   function renderSummary(){
-    byId('summary-head').innerHTML = `<tr><th>Élève</th>${KEYS.map(k=>`<th style="color:${k.color}">${k.letter}<small>${escapeHtml(k.skill)}</small></th>`).join('')}<th>Moyenne</th></tr>`;
+    byId('summary-head').innerHTML = `<tr><th>Élève</th>${KEYS.map(k=>`<th style="color:${k.color}">${k.letter}<small>${escapeHtml(k.skill)}</small></th>`).join('')}<th>Total</th></tr>`;
     byId('summary-body').innerHTML = state.students.map(s=>{
-      const vals = KEYS.map(k=>averageFor(s.name,k.id));
-      const available = vals.filter(v=>v!==null);
-      const overall = available.length ? available.reduce((a,b)=>a+b,0)/available.length : null;
-      return `<tr><th>${escapeHtml(s.name)}</th>${vals.map(v=>`<td>${v===null?'—':v.toFixed(1)}</td>`).join('')}<td class="overall">${overall===null?'—':overall.toFixed(1)}</td></tr>`;
+      const vals = KEYS.map(k=>pointsFor(s.name,k.id));
+      const overall = vals.reduce((a,b)=>a+b,0);
+      return `<tr><th>${escapeHtml(s.name)}</th>${vals.map(v=>`<td>${v}</td>`).join('')}<td class="overall">${overall}</td></tr>`;
     }).join('');
   }
 
@@ -242,12 +225,11 @@
       <div class="modal">
         <button class="close" aria-label="Fermer">×</button>
         <p>Consigner une observation — <b>${semesterLabel()}</b></p><h2>${escapeHtml(name)}</h2>
-        <label class="modalRating">Cote<select id="modal-rating">${RATINGS.map(r=>`<option value="${r.value}" ${r.value===3?'selected':''}>${r.label}</option>`).join('')}</select></label>
         <div class="modalList">${KEYS.map(k=>`<section><h3 style="color:${k.color}">${k.letter} — ${escapeHtml(k.title)} <small>(${escapeHtml(k.skill)})</small></h3><p class="meaning-note">${escapeHtml(k.meaning)}</p>${behaviors.filter(b=>b.key===k.id).map(b=>`<button data-modal-behavior="${b.id}"><span>${escapeHtml(b.label)}</span><b>Consigner</b></button>`).join('')}</section>`).join('')}</div>
       </div></div>`;
     root.querySelector('.close').addEventListener('click', closeModal);
     root.querySelector('.modalbg').addEventListener('click',e=>{ if(e.target===e.currentTarget) closeModal(); });
-    root.querySelectorAll('[data-modal-behavior]').forEach(btn=>btn.addEventListener('click',()=>record([name],btn.dataset.modalBehavior,byId('modal-rating').value)));
+    root.querySelectorAll('[data-modal-behavior]').forEach(btn=>btn.addEventListener('click',()=>record([name],btn.dataset.modalBehavior)));
   }
 
   function closeModal(){ byId('modal-root').innerHTML=''; }
@@ -289,10 +271,10 @@
   }
 
   function exportCsv(){
-    const rows = [['Semestre','Date','Élève','Lettre','Clé RÉUSSIR','HH','Comportement observé','Cote']];
+    const rows = [['Semestre','Date','Élève','Lettre','Clé RÉUSSIR','HH','Comportement observé','Points']];
     [...semesterLogs()].reverse().forEach(log=>{
       const k = keyById[log.keyId] || {};
-      rows.push([semesterLabel(log.semester),log.displayDate || log.at,log.student,k.letter||'',k.title||'',k.skill||'',log.behavior||'',log.rating||'']);
+      rows.push([semesterLabel(log.semester),log.displayDate || log.at,log.student,k.letter||'',k.title||'',k.skill||'',log.behavior||'',1]);
     });
     const csv = '\ufeff' + rows.map(row=>row.map(csvCell).join(',')).join('\r\n');
     const blob = new Blob([csv],{type:'text/csv;charset=utf-8'});
@@ -315,7 +297,7 @@
     selected.clear();
     renderStudents();
   });
-  byId('record-selected').addEventListener('click',()=>record([...selected],byId('behavior-select').value,byId('rating-select').value));
+  byId('record-selected').addEventListener('click',()=>record([...selected],byId('behavior-select').value));
   document.querySelectorAll('.tabs button').forEach(btn=>btn.addEventListener('click',()=>switchTab(btn.dataset.tab)));
   document.querySelectorAll('[data-semester]').forEach(btn=>btn.addEventListener('click',()=>switchSemester(btn.dataset.semester)));
   document.querySelectorAll('.export-csv').forEach(btn=>btn.addEventListener('click',exportCsv));

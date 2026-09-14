@@ -40,10 +40,9 @@
       <section class="awardbar">
         <div class="summary"><b id="selection-summary">Aucun élève choisi</b><div class="selection-actions"><button id="select-all">Choisir toute la classe</button><button id="clear-selection" type="button">Effacer la sélection</button></div></div>
         <label>Comportement observé<select id="behavior-select"></select></label>
-        <label>Cote<select id="rating-select"></select></label>
-        <button class="award" id="record-selected">Consigner</button>
+        <button class="award" id="record-selected">Accorder 1 point</button>
       </section>
-      <p class="hint"><b>Sélection multiple :</b> clique simplement sur tous les noms voulus. Les élèves choisis restent surlignés; choisis ensuite le comportement et la cote, puis clique sur <b>Consigner</b>. Reclique sur un nom pour le retirer.</p>
+      <p class="hint"><b>Sélection multiple :</b> clique simplement sur tous les noms voulus. Les élèves choisis restent surlignés; choisis ensuite le comportement, puis clique sur <b>Accorder 1 point</b>. Reclique sur un nom pour le retirer.</p>
       <section class="grid" id="student-grid"></section>
     </section>
 
@@ -54,9 +53,9 @@
     </section>
 
     <section class="view summaryView" id="view-summary">
-      <div class="sectionTitle"><div><h2>Sommaire RÉUSSIR — <span id="summary-semester">1er semestre</span></h2><p>Moyennes calculées uniquement à partir des observations du semestre choisi.</p></div><button class="secondary export-csv">Exporter les observations</button></div>
+      <div class="sectionTitle"><div><h2>Sommaire RÉUSSIR — <span id="summary-semester">1er semestre</span></h2><p>Nombre de points accordés pour chaque clé pendant le semestre choisi.</p></div><button class="secondary export-csv">Exporter les observations</button></div>
       <div class="tableWrap"><table><thead id="summary-head"></thead><tbody id="summary-body"></tbody></table></div>
-      <p class="professionalNote">Les moyennes servent d’aide à la décision. La cote du bulletin demeure fondée sur le jugement professionnel et la tendance des observations.</p>
+      <p class="professionalNote">Les points servent de trace d’observation. Le bulletin demeure fondé sur le jugement professionnel et l’ensemble des observations.</p>
     </section>
   </main>
   <div id="modal-root"></div>
