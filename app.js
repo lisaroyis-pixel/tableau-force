@@ -54,7 +54,7 @@
     { value:4, label:'4 — De façon constante' }
   ];
 
-  const STUDENTS = ['Adefarayola','Anna','Kalliope','Madilynn','Oliver','Lexi','Naomi','Odin','Maève','Sophie','Dominic','Tegan','Eileigh','Joseph','Emilie','Léa','Ewelina','Emma','Deacon','Kurtis','Wyatt','Isla','Araotanlowooluwa','Jayden','Benjamin'];
+  const STUDENTS = ['Adefarayola','Anna','Araotanlowooluwa','Benjamin','Deacon','Dominic','Eileigh','Emilie','Emma','Ewelina','Isla','Jayden','Joseph','Kalliope','Kurtis','Léa','Lexi','Madilynn','Maève','Naomi','Nathan','Odin','Oliver','Sophie','Tegan','Wyatt'];
   const AVATAR_COLORS = ['#c68b31','#3ca493','#d25f6c','#657cca','#9569b7','#559759'];
   const STORAGE_KEY = 'tableau-reussir-hh-2026';
   const LEGACY_KEY = 'tableau-force-hh-2026';
@@ -137,7 +137,7 @@
   }
 
   function renderStudents(){
-    byId('selection-summary').textContent = selected.size ? `${selected.size} élève${selected.size>1?'s':''} choisi${selected.size>1?'s':''}` : 'Aucun élève choisi';
+    byId('selection-summary').textContent = selected.size ? `${selected.size} élève${selected.size>1?'s':''} choisi${selected.size>1?'s':''} : ${[...selected].join(', ')}` : 'Aucun élève choisi';
     byId('select-all').textContent = selected.size === STUDENTS.length ? 'Tout désélectionner' : 'Choisir toute la classe';
     byId('student-grid').innerHTML = state.students.map((s,i)=>{
       const avg = studentAverage(s.name);
@@ -300,6 +300,10 @@
 
   byId('select-all').addEventListener('click',()=>{
     if(selected.size===STUDENTS.length) selected.clear(); else STUDENTS.forEach(n=>selected.add(n));
+    renderStudents();
+  });
+  byId('clear-selection').addEventListener('click',()=>{
+    selected.clear();
     renderStudents();
   });
   byId('record-selected').addEventListener('click',()=>record([...selected],byId('behavior-select').value,byId('rating-select').value));

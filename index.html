@@ -38,12 +38,12 @@
 
     <section class="view active classView" id="view-class">
       <section class="awardbar">
-        <div class="summary"><b id="selection-summary">Aucun élève choisi</b><button id="select-all">Choisir toute la classe</button></div>
+        <div class="summary"><b id="selection-summary">Aucun élève choisi</b><div class="selection-actions"><button id="select-all">Choisir toute la classe</button><button id="clear-selection" type="button">Effacer la sélection</button></div></div>
         <label>Comportement observé<select id="behavior-select"></select></label>
         <label>Cote<select id="rating-select"></select></label>
         <button class="award" id="record-selected">Consigner</button>
       </section>
-      <p class="hint">Clique sur les portraits pour sélectionner plusieurs élèves. Le bouton <b>+</b> ouvre la grille rapide d’un élève.</p>
+      <p class="hint"><b>Sélection multiple :</b> clique simplement sur tous les noms voulus. Les élèves choisis restent surlignés; choisis ensuite le comportement et la cote, puis clique sur <b>Consigner</b>. Reclique sur un nom pour le retirer.</p>
       <section class="grid" id="student-grid"></section>
     </section>
 
