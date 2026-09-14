@@ -54,7 +54,7 @@
     { value:4, label:'4 — De façon constante' }
   ];
 
-  const STUDENTS = ['Adefarayola','Anna','Araotanlowooluwa','Benjamin','Deacon','Dominic','Eileigh','Emilie','Emma','Ewelina','Isla','Jayden','Joseph','Kalliope','Kurtis','Léa','Lexi','Madilynn','Maève','Naomi','Nathan','Odin','Oliver','Sophie','Tegan','Wyatt'];
+  const STUDENTS = ['Anna','Araotan','Benjamin','Deacon','Dominic','Eileigh','Emilie','Emma','Ewelina','Fara','Isla','Jayden','Joseph','Kalliope','Kurtis','Léa','Lenora','Lexi','Madilynn','Maève','Naomi','Nathan','Odin','Oliver','Sophie','Tegan','Wyatt'];
   const AVATAR_COLORS = ['#c68b31','#3ca493','#d25f6c','#657cca','#9569b7','#559759'];
   const STORAGE_KEY = 'tableau-reussir-hh-2026';
   const LEGACY_KEY = 'tableau-force-hh-2026';
@@ -78,7 +78,7 @@
         const parsed = JSON.parse(raw);
         if(Array.isArray(parsed.students) && Array.isArray(parsed.logs)){
           parsed.students = reconcileStudents(parsed.students);
-          parsed.logs = parsed.logs.map(l=>({ ...l, semester:Number(l.semester||1) }));
+          parsed.logs = parsed.logs.map(l=>({ ...l, student: normalizeStudentName(l.student), semester:Number(l.semester||1) }));
           return parsed;
         }
       } catch(e) {}
@@ -86,8 +86,17 @@
     return { students: STUDENTS.map(name => ({name})), logs:[] };
   }
 
+  function normalizeStudentName(name){
+    const aliases = {
+      'Noami':'Naomi',
+      'Adefarayola':'Fara',
+      'Araotanlowooluwa':'Araotan'
+    };
+    return aliases[name] || name;
+  }
+
   function reconcileStudents(existing){
-    const map = new Map(existing.map(s => [s.name === 'Noami' ? 'Naomi' : s.name, s]));
+    const map = new Map(existing.map(s => [normalizeStudentName(s.name), {...s, name:normalizeStudentName(s.name)}]));
     return STUDENTS.map(name => ({...(map.get(name)||{}), name}));
   }
 
