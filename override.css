@@ -106,3 +106,50 @@
   .score{font-size:19px !important}
   .count{font-size:13px !important}
 }
+
+
+/* VERSION 5 — la page de classe tient complètement dans l'écran */
+@media (min-width:1200px){
+  html,body{height:100%}
+  body{overflow:hidden}
+  main{
+    height:100vh;
+    display:grid;
+    grid-template-rows:auto auto auto auto 1fr;
+    overflow:hidden;
+  }
+  #view-class.classView{
+    width:min(1600px,96vw);
+    margin:4px auto 0;
+    min-height:0;
+    display:grid !important;
+    grid-template-rows:auto auto 1fr;
+    align-items:stretch;
+    overflow:hidden;
+  }
+  .awardbar,
+  .hint,
+  .grid{
+    width:100% !important;
+  }
+  .awardbar{margin:4px 0 3px !important}
+  .hint{margin:0 0 4px !important}
+  .grid{
+    height:100% !important;
+    min-height:0 !important;
+    margin:0 !important;
+    grid-template-columns:repeat(9,minmax(0,1fr)) !important;
+    grid-template-rows:repeat(3,minmax(0,1fr)) !important;
+    gap:10px !important;
+    align-content:stretch !important;
+    align-items:stretch !important;
+  }
+  .student{
+    height:100% !important;
+    min-height:0 !important;
+    padding:12px 8px 10px !important;
+  }
+}
+@media (min-width:1500px){
+  .grid{gap:11px !important}
+}
