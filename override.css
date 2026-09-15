@@ -38,3 +38,32 @@
 @media (min-width:1050px){.grid{grid-template-columns:repeat(10,minmax(0,1fr))}}
 @media (min-width:1280px){.grid{grid-template-columns:repeat(13,minmax(0,1fr))}.student{min-height:64px}.student h2{font-size:8px}}
 @media (max-width:899px){.semester-switch{align-items:stretch;flex-direction:column}.semester-actions{width:100%;justify-content:stretch}.semester-buttons{flex:1}.semester-buttons button{flex:1}.reset-button{width:100%}}
+
+/* VUE GRAND ÉCRAN — utilise l'espace disponible sans défilement */
+@media (min-width:1200px){
+  .top{padding:8px 2vw;min-height:68px}
+  .mark{width:48px;height:48px;font-size:24px}
+  .brand{gap:11px}.eyebrow{font-size:9px;letter-spacing:1.6px}.brand h1{font-size:24px;margin:2px 0}.tabs button{padding:8px 14px;font-size:12px}.total{font-size:9px}.total b{font-size:24px}
+  .yoda{width:min(1600px,96vw);height:54px;min-height:54px;margin:7px auto 0;gap:12px;border-radius:16px}
+  .yoda img{width:82px;height:54px}.yoda span{font-size:8px;letter-spacing:1.2px}.yoda blockquote{font-size:16px}.saber{width:90px;height:3px}
+  .semester-switch{width:min(1600px,96vw);margin-top:7px;min-height:46px;padding:7px 11px;border-radius:14px}.semester-switch strong{font-size:18px}.semester-switch span{font-size:9px}.semester-buttons button,.reset-button{padding:7px 12px;font-size:11px}
+  .forces{width:min(1600px,96vw);margin:7px auto 0;gap:7px}
+  .forces div{padding:7px 5px 6px;border-radius:13px;min-height:54px}.forces div::before{height:3px}.forces b{font-size:1.4rem}.forces span{font-size:10px!important;line-height:1.1}
+  .awardbar{width:min(1600px,96vw);margin:7px auto 4px;padding:8px 10px;gap:10px;grid-template-columns:210px minmax(420px,1fr) 200px;border-radius:14px}
+  .awardbar label{font-size:11px}.awardbar select{padding:9px 10px;font-size:12px;border-radius:10px}.award{padding:10px 15px;font-size:13px;border-radius:10px}.summary{font-size:11px}.summary button{font-size:10px}.selection-actions button{font-size:10px}
+  .hint{width:min(1600px,96vw);margin:3px auto 6px;font-size:10px;line-height:1.15}
+  .grid{width:min(1600px,96vw);margin:0 auto 10px;grid-template-columns:repeat(9,minmax(0,1fr));gap:8px}
+  .student{min-height:132px;padding:10px 7px 9px;border-radius:14px;display:flex;flex-direction:column;justify-content:center;box-shadow:0 5px 12px rgba(111,87,63,.09)}
+  .student::after{inset:auto 12px 0 12px;height:4px}
+  .avatar{width:46px;height:44px;font-size:20px}
+  .student h2{margin:7px 0 5px;font-size:16px;line-height:1.05;white-space:nowrap;overflow:visible;text-overflow:clip}
+  .score{font-size:14px;padding:3px 7px;border-radius:8px}.score small{font-size:8px}.count{margin-top:4px!important;font-size:10px!important}
+  .quick{width:23px;height:23px;right:6px;top:6px;font-size:14px}.check{left:6px;top:6px;font-size:12px}
+}
+
+@media (min-width:1500px){
+  .grid{grid-template-columns:repeat(9,minmax(0,1fr));gap:9px}
+  .student{min-height:138px}
+  .student h2{font-size:17px}
+  .avatar{width:48px;height:46px;font-size:21px}
+}
