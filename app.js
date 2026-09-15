@@ -82,8 +82,8 @@
   function normalizeStudentName(name){
     const aliases = {
       'Noami':'Naomi',
-      'Adefarayola':'Fara',
-      'Araotanlowooluwa':'Araotan'
+      'Araotanlowooluwa':'Araotan',
+      'Adefarayola':'Fara'
     };
     return aliases[name] || name;
   }
