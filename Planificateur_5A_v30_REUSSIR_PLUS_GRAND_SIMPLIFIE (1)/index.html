@@ -1,0 +1,260 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#2f6f68" />
+  <title>TeachFlow — Planificateur 5A</title>
+  <link rel="stylesheet" href="styles.css" />
+
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#2f7f76">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="TeachFlow">
+<link rel="apple-touch-icon" href="icon-192.png">
+
+</head>
+<body>
+  <div id="app">
+    <aside class="sidebar" id="sidebar">
+      <div class="brand">
+        <div class="brand-mark">TF</div>
+        <div><strong>TeachFlow</strong><span>Planificateur 5A</span></div>
+      </div>
+      <nav class="nav" aria-label="Navigation principale">
+        <button class="nav-item active" data-view="week">📅 <span>Semaine</span></button>
+        <button class="nav-item" data-view="day">🗓️ <span>Journée</span></button>
+        <button class="nav-item" data-view="subjects">📊 <span>Par sujet</span></button>
+        <button class="nav-item" data-view="classboard">🧰 <span>Tableau de classe</span></button>
+        <button class="nav-item" data-view="classhub">🐝 <span>Centre de classe</span></button>
+        <button class="nav-item" data-view="reussir">⭐ <span>RÉUSSIR</span></button>
+        <button class="nav-item" data-view="prayers">🙏 <span>Prières</span></button>
+        <button class="nav-item" data-view="units">🗂️ <span>Unités</span></button>
+        <button class="nav-item" data-view="annual">🗓️ <span>Année</span></button>
+        <button class="nav-item" data-view="schedule">⏰ <span>Horaire</span></button>
+        <button class="nav-item" data-view="homework">✏️ <span>Graphèmes / devoirs</span></button>
+        <button class="nav-item" data-view="resources">🔗 <span>Ressources / liens</span></button>
+        <button class="nav-item" data-view="students">👥 <span>Élèves</span></button>
+        <button class="nav-item" data-view="guards">🛡️ <span>Gardes</span></button>
+        <button class="nav-item" data-view="settings">⚙️ <span>Réglages</span></button>
+      </nav>
+      <div class="version-badge">TeachFlow v9 · vue complète</div>
+      <div class="sidebar-bottom">
+        <div class="privacy-card"><strong>Synchronisation sécurisée</strong><small>Connecte-toi pour retrouver la même planification à la maison et à l’école.</small></div>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <button class="icon-btn mobile-only" id="menuBtn" title="Menu">☰</button>
+        <div class="top-title"><span id="eyebrow">2026–2027 · 5A</span><h1 id="pageTitle">Planification de la semaine</h1></div>
+        <div class="top-actions">
+          <button class="ghost-btn" id="todayBtn">Aujourd’hui</button><button class="ghost-btn mobile-install-btn" id="installAppBtn" onclick="installTeachFlow()">📱 Installer</button>
+          <button class="ghost-btn" id="printBtn">Imprimer</button>
+          <button class="ghost-btn" id="syncStatusBtn" disabled>☁️ Synchronisé</button><button class="primary-btn" id="exportBtn">Sauvegarde</button><button class="ghost-btn" id="logoutBtn">Déconnexion</button>
+        </div>
+      </header>
+      <section class="content" id="content"></section>
+    </main>
+  </div>
+
+  <dialog id="authDialog" class="dialog auth-dialog">
+    <form method="dialog" id="authForm">
+      <div class="dialog-head"><div><small>TeachFlow privé</small><h2 id="authTitle">Connexion</h2></div></div>
+      <p id="authIntro" class="auth-intro">Connecte-toi pour synchroniser ta planification entre tes ordinateurs.</p>
+      <div class="auth-fields">
+        <label class="field-label" for="authUsername">Nom d’utilisateur</label>
+        <input id="authUsername" class="search" autocomplete="username" placeholder="Lisa" />
+        <label class="field-label" for="authPassword">Mot de passe</label>
+        <input id="authPassword" class="search" type="password" autocomplete="current-password" placeholder="••••••••" />
+        <label class="field-label setup-only" for="authPassword2" style="display:none">Confirmer le mot de passe</label>
+        <input id="authPassword2" class="search setup-only" type="password" autocomplete="new-password" placeholder="••••••••" style="display:none" />
+        <p id="authMessage" class="auth-message" aria-live="polite"></p>
+      </div>
+      <div class="dialog-actions"><button class="primary-btn" id="authSubmit" value="default" type="button">Se connecter</button></div>
+    </form>
+  </dialog>
+
+  <dialog id="editDialog" class="dialog">
+    <form method="dialog" id="editForm">
+      <div class="dialog-head"><div><small id="editWeekLabel"></small><h2>Modifier la semaine</h2></div><button class="icon-btn" value="cancel" type="submit">✕</button></div>
+      <div class="form-grid" id="editFields"></div>
+      <div class="dialog-actions"><button class="ghost-btn" value="cancel" type="submit">Annuler</button><button class="primary-btn" id="saveEditBtn" value="default" type="button">Enregistrer</button></div>
+    </form>
+  </dialog>
+
+
+  <dialog id="dayDialog" class="dialog">
+    <form method="dialog" id="dayForm">
+      <div class="dialog-head">
+        <div><small id="dayCycleLabel"></small><h2 id="dayDialogTitle">Détails du jour</h2></div>
+        <button class="icon-btn" value="cancel" type="submit">✕</button>
+      </div>
+      <div class="day-detail-grid">
+        <section class="day-detail-panel day-editor-panel">
+          <label class="field-label" for="dayRichEditor">Notes, rappels, matériel et ressources</label>
+          <div class="rich-toolbar" id="dayRichToolbar" role="toolbar" aria-label="Outils de mise en forme">
+            <select id="formatBlock" class="toolbar-select" aria-label="Style de paragraphe">
+              <option value="p">¶ Paragraphe</option>
+              <option value="h2">Titre</option>
+              <option value="h3">Sous-titre</option>
+            </select>
+            <button type="button" data-cmd="bold" title="Gras"><strong>B</strong></button>
+            <button type="button" data-cmd="italic" title="Italique"><em>I</em></button>
+            <button type="button" data-cmd="underline" title="Souligné"><u>U</u></button>
+            <button type="button" data-cmd="strikeThrough" title="Barré"><s>S</s></button>
+            <span class="toolbar-sep"></span>
+            <button type="button" data-cmd="insertOrderedList" title="Liste numérotée">1≡</button>
+            <button type="button" data-cmd="insertUnorderedList" title="Liste à puces">•≡</button>
+            <button type="button" data-cmd="outdent" title="Réduire le retrait">⇤</button>
+            <button type="button" data-cmd="indent" title="Augmenter le retrait">⇥</button>
+            <span class="toolbar-sep"></span>
+            <button type="button" id="richAddImage" title="Ajouter une image">🖼</button>
+            <button type="button" id="richAddTable" title="Insérer un tableau">▦</button>
+            <button type="button" id="richAddLink" class="toolbar-link" title="Ajouter un lien">🔗</button>
+            <button type="button" id="richSpecial" title="Caractère spécial">Ω</button>
+            <span class="toolbar-sep"></span>
+            <button type="button" data-cmd="justifyLeft" title="Aligner à gauche">☰</button>
+            <button type="button" data-cmd="justifyCenter" title="Centrer">≡</button>
+            <button type="button" data-cmd="justifyRight" title="Aligner à droite">☷</button>
+            <button type="button" data-cmd="insertHorizontalRule" title="Ligne horizontale">―</button>
+            <label class="color-tool" title="Surlignage">🖍<input id="hiliteColor" type="color" value="#fff2a8" aria-label="Couleur de surlignage"></label>
+            <label class="color-tool" title="Couleur du texte">A<input id="fontColor" type="color" value="#263331" aria-label="Couleur du texte"></label>
+            <select id="fontSize" class="toolbar-select small" aria-label="Taille du texte">
+              <option value="3">A</option><option value="4">A+</option><option value="5">A++</option>
+            </select>
+            <button type="button" data-cmd="undo" title="Annuler">↶</button>
+            <button type="button" data-cmd="redo" title="Rétablir">↷</button>
+          </div>
+          <div id="dayRichEditor" class="rich-editor" contenteditable="true" role="textbox" aria-multiline="true" data-placeholder="Ajoute les informations pour cette journée…"></div>
+          <input id="richImageInput" type="file" accept="image/*" hidden />
+
+          <div class="link-section">
+            <div class="link-section-head"><label class="field-label">Liens rapides du jour</label><button class="ghost-btn small-action" id="addDayLink" type="button">+ Ajouter un lien</button></div>
+            <div id="dayLinkList" class="day-link-list"></div>
+          </div>
+        </section>
+        <section class="day-detail-panel">
+          <label class="field-label" for="dayImages">Images privées synchronisées</label>
+          <input id="dayImages" type="file" accept="image/*" multiple />
+          <p class="helper-text">Les images sont conservées dans ton espace TeachFlow privé et ne sont pas publiées sur GitHub.</p>
+          <div id="dayImageGallery" class="image-gallery"></div>
+        </section>
+      </div>
+      <div class="dialog-actions">
+        <button class="ghost-btn" value="cancel" type="submit">Annuler</button>
+        <button class="primary-btn" id="saveDayBtn" value="default" type="button">Enregistrer la journée</button>
+      </div>
+    </form>
+  </dialog>
+
+
+
+  <dialog id="unitDialog" class="dialog">
+    <form method="dialog" id="unitForm">
+      <div class="dialog-head"><div><small>Planification par unité</small><h2 id="unitDialogTitle">Nouvelle unité</h2></div><button class="icon-btn" value="cancel" type="submit">✕</button></div>
+      <div class="form-grid">
+        <div class="form-field"><label for="unitTitle">Titre de l’unité</label><input id="unitTitle" class="search full-input" placeholder="Ex. Le corps humain"></div>
+        <div class="form-field"><label for="unitSubject">Matière</label><select id="unitSubject" class="search full-input"><option>Français</option><option>Mathématiques</option><option>Sciences</option><option>Enseignement religieux</option><option>Études sociales</option><option>Arts</option><option>Éducation physique / Santé</option><option>Anglais</option><option>Autre</option></select></div>
+        <div class="form-field"><label for="unitDates">Période / dates</label><input id="unitDates" class="search full-input" placeholder="Ex. Septembre · 3 semaines"></div>
+        <div class="form-field"><label for="unitAssessment">Évaluation / produit final</label><input id="unitAssessment" class="search full-input" placeholder="Ex. Maquette annotée"></div>
+      </div>
+      <div class="form-field unit-editor-wrap"><label>Objectifs, leçons, ressources et notes</label>
+        <div class="unit-toolbar"><button type="button" data-unit-cmd="bold"><strong>B</strong></button><button type="button" data-unit-cmd="italic"><em>I</em></button><button type="button" data-unit-cmd="underline"><u>U</u></button><button type="button" data-unit-cmd="insertUnorderedList">• Liste</button><button type="button" id="unitAddLink">🔗 Lien</button></div>
+        <div id="unitRichEditor" class="rich-editor unit-rich-editor" contenteditable="true" data-placeholder="Ajoute les grandes idées, attentes, séquence de leçons, ressources, liens…"></div>
+      </div>
+      <div class="dialog-actions"><button class="ghost-btn" value="cancel" type="submit">Annuler</button><button class="primary-btn" id="saveUnitBtn" value="default" type="button">Enregistrer l’unité</button></div>
+    </form>
+  </dialog>
+
+  <dialog id="planningDialog" class="dialog small-dialog">
+    <form method="dialog">
+      <div class="dialog-head"><div><small>Unité → planification</small><h2>Ajouter à ma planification</h2></div><button class="icon-btn" value="cancel">✕</button></div>
+      <div class="form-field"><label for="planningWeekSelect">Semaine</label><select id="planningWeekSelect" class="search full-input"></select></div>
+      <div class="form-field"><label for="planningFieldSelect">Partie de la matière</label><select id="planningFieldSelect" class="search full-input"></select></div>
+      <div class="form-field"><label for="planningContent">Contenu à ajouter</label><textarea id="planningContent" class="large-textarea compact"></textarea></div>
+      <div class="dialog-actions"><button class="ghost-btn" value="cancel">Annuler</button><button class="primary-btn" id="confirmAddPlanning" type="button">Ajouter</button></div>
+    </form>
+  </dialog>
+
+  <dialog id="importDialog" class="dialog small-dialog">
+    <form method="dialog">
+      <div class="dialog-head"><div><small>Données locales</small><h2>Importer une sauvegarde</h2></div><button class="icon-btn" value="cancel">✕</button></div>
+      <p>Choisis un fichier JSON exporté depuis TeachFlow. Il remplacera les modifications locales de ce navigateur.</p>
+      <input id="importFile" type="file" accept="application/json,.json" />
+      <div class="dialog-actions"><button class="ghost-btn" value="cancel">Annuler</button><button class="primary-btn" id="confirmImport" value="default" type="button">Importer</button></div>
+    </form>
+  </dialog>
+
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+<div style="position:fixed;right:10px;bottom:8px;font:11px system-ui;color:#6b7280;opacity:.75;z-index:9999">v30 · RÉUSSIR simplifié</div>
+
+<dialog id="blockDialog" class="editor-dialog block-editor-dialog">
+  <form method="dialog" class="dialog-card">
+    <div class="dialog-head">
+      <div>
+        <h2 id="blockDialogTitle">Modifier le bloc</h2>
+        <p id="blockDialogMeta" class="muted-copy"></p>
+      </div>
+      <button class="icon-btn" value="cancel" aria-label="Fermer">×</button>
+    </div>
+
+    <section class="block-existing">
+      <strong>Planification déjà prévue</strong>
+      <p id="blockExistingPlan"></p>
+    </section>
+
+    <div class="block-toolbar" aria-label="Mise en forme">
+      <button type="button" id="blockBold" title="Gras"><strong>B</strong></button>
+      <button type="button" id="blockItalic" title="Italique"><em>I</em></button>
+      <button type="button" id="blockBullets" title="Liste à puces">• Liste</button>
+      <button type="button" id="blockNumbered" title="Liste numérotée">1. Liste</button>
+      <button type="button" id="blockAddLink" title="Ajouter un lien">🔗 Lien</button>
+    </div>
+
+    <label class="form-field">
+      <span>Ajouter à ce bloc</span>
+      <div id="blockRichEditor" class="rich-editor block-rich-editor" contenteditable="true" aria-label="Notes du bloc"></div>
+    </label>
+
+    <div class="block-links-section">
+      <div class="section-head compact">
+        <h3>Liens du bloc</h3>
+        <button type="button" class="ghost-btn" id="addBlockLink">+ Ajouter un lien</button>
+      </div>
+      <div id="blockLinkList"></div>
+    </div>
+
+    <div class="dialog-actions">
+      <button value="cancel" class="ghost-btn">Annuler</button>
+      <button type="button" class="primary-btn" id="saveBlockBtn">Enregistrer dans ce bloc</button>
+    </div>
+  </form>
+</dialog>
+
+<dialog id="classMessageDialog" class="class-message-dialog"><div class="class-message-card"><button class="icon-btn class-message-close" type="button" onclick="this.closest('dialog').close()" aria-label="Fermer">×</button><div id="classMessageBig"></div></div></dialog>
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));
+}
+let deferredInstallPrompt=null;
+window.addEventListener('beforeinstallprompt',e=>{
+  e.preventDefault(); deferredInstallPrompt=e;
+  document.documentElement.classList.add('pwa-installable');
+});
+window.installTeachFlow=async function(){
+  if(deferredInstallPrompt){
+    deferredInstallPrompt.prompt();
+    await deferredInstallPrompt.userChoice;
+    deferredInstallPrompt=null;
+    document.documentElement.classList.remove('pwa-installable');
+  } else {
+    alert("Sur iPhone : Safari → Partager → Ajouter à l’écran d’accueil.\nSur Android : menu du navigateur → Installer l’application.");
+  }
+};
+</script>
+
+</body>
+</html>
