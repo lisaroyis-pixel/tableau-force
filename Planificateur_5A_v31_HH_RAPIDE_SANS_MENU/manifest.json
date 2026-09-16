@@ -1,0 +1,23 @@
+{
+  "name": "TeachFlow — Planificateur 5A",
+  "short_name": "TeachFlow",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f6f0e7",
+  "theme_color": "#2f7f76",
+  "orientation": "any",
+  "description": "Planificateur de classe 5A",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
