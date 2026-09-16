@@ -1,0 +1,9 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "planificateur-5a",
+  "compatibility_date": "2026-09-07",
+  "observability": { "enabled": true },
+  "assets": {
+    "directory": "."
+  }
+}
